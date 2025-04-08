@@ -1,4 +1,3 @@
-import e from "express";
 import GenerateInvoiceUseCase from "./generate-invoice.usecase";
 import { GenerateInvoiceUseCaseInputDto } from "./generate-invoice.usecase.dto";
 

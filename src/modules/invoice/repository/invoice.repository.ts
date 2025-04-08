@@ -1,3 +1,7 @@
+import Address from "../../@shared/domain/value-object/address";
+import Id from "../../@shared/domain/value-object/id.value-object";
+import Invoice from "../domain/Invoice";
+import InvoiceItems from "../domain/InvoiceItems";
 import InvoiceGateway from "../gateway/invoice.gateway";
 import InvoiceModel from "./invoice.model";
 import InvoiceItemsModel from "./invoiceItems.model";
@@ -28,7 +32,33 @@ export default class InvoiceRepository implements InvoiceGateway
   })
 }
 
-  async find(id: string): Promise<any> {
-    // Implementation for finding an invoice by ID in the database
-  }  
+async find(id: string): Promise<Invoice> {
+  const result = await InvoiceModel.findOne({
+    where: { id },
+    include: [InvoiceItemsModel], // Include related models
+  });
+
+  if (!result) {
+    throw new Error("Invoice not found");
+  }
+
+  return new Invoice({
+    id: new Id(result.id),
+    name: result.name,
+    document: result.document,
+    address: new Address(
+      result.street,
+      result.number,
+      result.complement,
+      result.city,
+      result.state,
+      result.zipcode  
+    ),
+    items: result.items.map((item: any) => new InvoiceItems({
+      id: new Id(item.id),
+      name: item.name,
+      price: item.price,
+    })),
+  }); // Convert Sequelize instance to plain object
+}
 }

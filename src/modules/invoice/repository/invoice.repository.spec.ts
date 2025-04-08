@@ -70,4 +70,44 @@ describe("Invoice Repository test", () => {
     expect(invoiceDb.items[0].name).toEqual(invoice.items[0].name);
     expect(invoiceDb.items[0].price).toEqual(invoice.items[0].price);
   });
+
+  it("should find an invoice", async () => {
+    const invoice = new Invoice({
+      id: new Id("1"),
+      name: "Invoice 1",
+      document: "Document 1",
+      address: new Address(
+        "123 Main St", // street
+        "456",         // number
+        "Apt 789",     // complement
+        "Springfield", // city
+        "IL",          // state
+        "62704"        // zipCode
+      ),
+      items: [new InvoiceItems({
+        id: new Id("1"), 
+        name: "Item 1",
+        price: 100
+      })],
+    });
+    const repository = new InvoiceRepository();
+    await repository.add(invoice);
+
+    const foundInvoice = await repository.find(invoice.id.id);
+    console.log("foundInvoice", foundInvoice);
+    expect(foundInvoice.id.id).toEqual(invoice.id.id);
+    expect(foundInvoice.name).toEqual(invoice.name);
+    expect(foundInvoice.document).toEqual(invoice.document);
+    expect(foundInvoice.address.street).toEqual(invoice.address.street);
+    expect(foundInvoice.address.number).toEqual(invoice.address.number);
+    expect(foundInvoice.address.complement).toEqual(invoice.address.complement);
+    expect(foundInvoice.address.city).toEqual(invoice.address.city);
+    expect(foundInvoice.address.state).toEqual(invoice.address.state);
+    expect(foundInvoice.address.zipCode).toEqual(invoice.address.zipCode);
+    expect(foundInvoice.items.length).toEqual(1);
+    expect(foundInvoice.items[0].id.id).toEqual(invoice.items[0].id.id);
+    expect(foundInvoice.items[0].name).toEqual(invoice.items[0].name);
+    expect(foundInvoice.items[0].price).toEqual(invoice.items[0].price);
+  }
+  );
 });
