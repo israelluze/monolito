@@ -19,16 +19,15 @@ const MockRepository = () => {
       const input = {
         name: "Lucian",
         email: "lucian@123.com",
-        document: "1234-5678",
-        address: "Rua 123",
-        // address: new Address(
-        //   "Rua 123",
-        //   "99",
-        //   "Agua Verde",
-        //   "Blumenau",
-        //   "SC",
-        //   "89032-888",
-        // )
+        document: "1234-5678",        
+        address: new Address(
+          "Rua 123",
+          "99",
+          "Agua Verde",
+          "Blumenau",
+          "SC",
+          "89032-888",
+        )
       }
   
       const result =  await usecase.execute(input)

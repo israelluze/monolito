@@ -1,10 +1,7 @@
 import { Sequelize } from "sequelize-typescript";
 import { ClientModel } from "../repository/client.model";
-import ClientRepository from "../repository/client.repository";
-import AddClientUseCase from "../usecase/add-client/add-client.usecase";
-import ClientAdmFacade from "./client-adm.facade";
-import FindClientUseCase from "../usecase/find-client/find-client.usecase";
 import ClientAdmFacadeFactory from "../factory/client-adm.facade.factoty";
+import Address from "../../@shared/domain/value-object/address";
 
 describe("ClientAdmFacade Test", () => {
 let sequelize: Sequelize;
@@ -34,7 +31,7 @@ let sequelize: Sequelize;
         name: "John Doe",
         email:"teste@teste.com.br",
         document: "123456789",
-        address: "Rua teste"
+        address: new Address("Rua teste", "1", "Apto 1", "São Paulo", "SP", "12345678")
     };
 
     await facade.add(input);
@@ -44,7 +41,7 @@ let sequelize: Sequelize;
     expect(client).toBeDefined();
     expect(client.name).toBe(input.name);
     expect(client.email).toBe(input.email);
-    expect(client.address).toBe(input.address);
+    expect(client.street).toBe(input.address.street);
   });
 
   it("should find a client", async () => {
@@ -56,7 +53,7 @@ let sequelize: Sequelize;
       name: "John Doe",
       email:"teste@teste.com.br",
       document: "123456789",
-      address: "Rua teste"
+      address: new Address("Rua teste", "1", "Apto 1", "São Paulo", "SP", "12345678")
     };
 
     await facade.add(input);
@@ -67,7 +64,7 @@ let sequelize: Sequelize;
     expect(client.id).toBe(input.id);
     expect(client.name).toBe(input.name);
     expect(client.email).toBe(input.email);
-    expect(client.address).toBe(input.address);
+    expect(client.address.street).toBe(input.address.street);
 
 
   });
