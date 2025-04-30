@@ -8,6 +8,7 @@ import ProductCatalogModel from "./modules/store-catalog/repository/product.mode
 import { ClientModel } from "./modules/client-adm/repository/client.model";
 import checkoutRoutes from "./modules/checkout/infraestruture/api/routes/checkout.routes";
 import { Umzug, SequelizeStorage } from "umzug";
+import path from "path"; // Adicione esta linha
 
 const app = express();
 app.use(express.json());
@@ -31,7 +32,7 @@ async function setupDb() {
         glob: [
           "*/src/modules/migrations/*.{js,ts}",
           {
-            cwd: join(__dirname, "../../../"),
+            cwd: path.join(__dirname, "../../../"), // Use path.join aqui
             ignore: ["**/*.d.ts", "**/index.ts", "**/index.js"],
           },
         ],
@@ -39,7 +40,7 @@ async function setupDb() {
       context: sequelize,
       storage: new SequelizeStorage({ sequelize }),
       logger: console
-    })
+    });
 
     const queryInterface = sequelize.getQueryInterface();
     console.log("QueryInterface:", queryInterface);
@@ -66,7 +67,3 @@ app.use("/checkout", checkoutRoutes);
 // app.use("/invoice", invoiceRoutes);
 
 export default app;
-
-function join(__dirname: string, arg1: string): string {
-  throw new Error('Function not implemented.');
-}
