@@ -2,6 +2,7 @@ import 'ts-node/register';
 import express from "express";
 import productRoutes from "./modules/product-adm/infraestructure/api/routes/product.routes";
 import clientRoutes from "./modules/client-adm/infraestructure/api/routes/client.routes";
+import storeRoutes from "./modules/store-catalog/infraestructure/api/routes/store.routes";
 import { Sequelize } from "sequelize-typescript";
 import { ProductAdmModel } from "./modules/product-adm/repository/product.model";
 import ProductCatalogModel from "./modules/store-catalog/repository/product.model";
@@ -27,25 +28,32 @@ async function setupDb() {
     await sequelize.addModels([ProductCatalogModel, ProductAdmModel, ClientModel]);
 
     // Configure o Umzug para gerenciar as migrations
+    // migration = new Umzug({
+    //   migrations: {
+    //     glob: 
+    //       "*/src/modules/migrations/*.{js,ts}"
+    //       // {
+    //       //   cwd: path.join(__dirname, "../../../"), // Use path.join aqui
+    //       //   ignore: ["**/*.d.ts", "**/index.ts", "**/index.js"],
+    //       // },
+    //     ,
+    //   },
+    //   context: sequelize,
+    //   storage: new SequelizeStorage({ sequelize }),
+    //   logger: console
+    // });
+
     migration = new Umzug({
       migrations: {
-        glob: [
-          "*/src/modules/migrations/*.{js,ts}",
-          {
-            cwd: path.join(__dirname, "../../../"), // Use path.join aqui
-            ignore: ["**/*.d.ts", "**/index.ts", "**/index.js"],
-          },
-        ],
+        glob: "src/modules/migrations/*.{js,ts}",
       },
       context: sequelize,
       storage: new SequelizeStorage({ sequelize }),
-      logger: console
+      logger: console,
     });
 
-    const queryInterface = sequelize.getQueryInterface();
-    console.log("QueryInterface:", queryInterface);
-
     console.log("Database setup complete.");
+
 }
 
 (async () => {
@@ -55,6 +63,9 @@ async function setupDb() {
         console.log("Running migrations...");
         await migration.up(); // Executa as migrations
         console.log("Database synchronized successfully");
+        const tables = await sequelize.getQueryInterface().showAllTables();
+        console.log("Tables in the database:", tables);
+        
     } catch (error) {
         console.error("Failed to synchronize the database:", error);
     }
@@ -64,6 +75,7 @@ async function setupDb() {
 app.use("/products", productRoutes);
 app.use("/clients", clientRoutes);
 app.use("/checkout", checkoutRoutes);
+app.use("/store", storeRoutes);
 // app.use("/invoice", invoiceRoutes);
 
 export default app;

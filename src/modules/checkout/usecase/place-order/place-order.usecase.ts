@@ -45,7 +45,7 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
         const products = await Promise.all(
             input.products.map((p) => this.getProduct(p.productId))
         );
-        console.log("products", products);
+        
 
         const myClient = new Client({
             id: new Id(client.id),
@@ -58,11 +58,14 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
             client: myClient,
             products,
         });
-
+        
+        console.log("antes do pagamento");
         const payment = await this._paymentoFacade.process({
             orderId: order.id.id,
             amount: order.total,
         });
+        console.log("depois do pagamento");
+        console.log("Payment", payment);
 
         const invoice = 
             payment.status === "approved" ?
