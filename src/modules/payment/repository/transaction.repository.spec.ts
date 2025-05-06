@@ -38,7 +38,7 @@ describe("Transaction Repository test", () => {
         expect(result.id.id).toBe(transaction.id.id);  
         expect(result.orderId).toBe(transaction.orderId);
         expect(result.amount).toBe(transaction.amount);
-        expect(result.status).toBe("aproved");
+        expect(result.status).toBe("approved");
 
 
 

@@ -9,10 +9,10 @@ export default class GenerateInvoiceUseCase {
 
     private _generateRepository: InvoiceGateway
 
-    constructor(generateRepository: InvoiceGateway) {
+    constructor(generateRepository: InvoiceGateway) {        
         this._generateRepository = generateRepository
     }
-    async execute(input: GenerateInvoiceUseCaseInputDto): Promise<GenerateInvoiceUseCaseOutputDto> {
+    async execute(input: GenerateInvoiceUseCaseInputDto): Promise<GenerateInvoiceUseCaseOutputDto> {        
         const props = {
             id: input.id ? new Id(input.id) : new Id(),
             name: input.name,
@@ -33,10 +33,10 @@ export default class GenerateInvoiceUseCase {
                 })
             )
         };
-
+        
         const invoice = new Invoice(props)
         await this._generateRepository.add(invoice)
-
+        
         return {
             id: invoice.id.id,
             name: invoice.name,

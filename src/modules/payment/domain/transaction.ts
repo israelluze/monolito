@@ -32,20 +32,20 @@ export default class Transaction extends BaseEntity implements AggregateRoot {
     }
 
     aproved():void{
-        this._status = "aproved";
+        this._status = "approved";
     }
 
     decline():void{
         this._status = "decline";
     }
 
-    process():void{
+    process():void{        
         if (this._amount >= 100) {
             this.aproved();
         }
         else{
             this.decline();
-        }
+        }        
     }
 
     get amount():number{

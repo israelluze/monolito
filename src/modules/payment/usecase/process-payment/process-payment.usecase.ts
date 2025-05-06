@@ -1,3 +1,4 @@
+import { Console } from "console";
 import UseCaseInterface from "../../../@shared/usecase/use-case.interface";
 import Transaction from "../../domain/transaction";
 import PaymentGateway from "../../gateway/paymeny.gateway";
@@ -8,13 +9,11 @@ export default class ProcessPaymentUseCase implements UseCaseInterface {
         private transactionRepository: PaymentGateway       
     ) {}
 
-    async execute(input: ProcessPaymentInputDto): Promise<ProcessPaymentOutputDto> {
+    async execute(input: ProcessPaymentInputDto): Promise<ProcessPaymentOutputDto> {        
         const transaction = new Transaction({
             amount: input.amount,
             orderId: input.orderId
-        });
-
-        console.log("ProcessPaymentUseCase.execute", transaction);
+        });       
 
         transaction.process();
 

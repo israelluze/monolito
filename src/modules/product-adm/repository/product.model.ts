@@ -4,7 +4,7 @@ import { Column, Model, PrimaryKey, Table } from "sequelize-typescript";
 @Table({
   modelName: "ProductAdmModel",
   tableName: "products",
-  timestamps: false,
+  timestamps: true,
 })
 export class ProductAdmModel extends Model {
   @PrimaryKey
@@ -23,9 +23,9 @@ export class ProductAdmModel extends Model {
   @Column({ allowNull: false })
   stock: number;
 
-  @Column({ allowNull: false })
+  @Column({ allowNull: true })
   createdAt: Date;
 
-  @Column({ allowNull: false })
+  @Column({ allowNull: true })
   updatedAt: Date;
 }

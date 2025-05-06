@@ -92,9 +92,7 @@ let sequelize: Sequelize;
     const result = await invoiceFacade.generate(input);
     
     const findInput = { id: "1" };
-    const output = await invoiceFacade.find(findInput);
-
-    console.log("teste ",output);
+    const output = await invoiceFacade.find(findInput);    
 
     //expect(output.id).toBe(input.id);
     

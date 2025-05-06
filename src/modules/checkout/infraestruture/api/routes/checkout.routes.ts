@@ -19,7 +19,7 @@ const placeOrderUseCase = new PlaceOrderUseCase(
   clientFacade,
   productFacade,
   catalogFacade,
-  null, // repository is not used in this example
+  null, 
   invoiceFacade,
   paymentFacade
 );
@@ -27,9 +27,7 @@ const placeOrderUseCase = new PlaceOrderUseCase(
 const router = Router();
 
 router.post("/", async (req, res) => {
-  try {
-    console.log("Request body:", req.body); // Log the request body
-    // Verifique se o corpo da requisição contém os dados necessários
+  try {        
     if (!req.body.clientId || !req.body.products) {
       return res.status(400).json({ error: "clientId and products are required" });
     }    

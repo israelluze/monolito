@@ -6,7 +6,7 @@ const transaction = new Transaction({
     id: new Id("1"),
     amount: 100,
     orderId: "1",
-    status: "aproved",
+    status: "approved",
 })
 
 const MockRepository = () => ({
@@ -37,7 +37,7 @@ describe("Process Payment Use Case", () => {
     
         expect(result.transactionId).toBe(transaction.id.id);
         expect(repository.save).toHaveBeenCalled();
-        expect(result.status).toBe("aproved");
+        expect(result.status).toBe("approved");
         expect(result.amount).toBe(100);
         expect(result.orderId).toBe("1");
         expect(result.createdAt).toBe(transaction.createdAt);

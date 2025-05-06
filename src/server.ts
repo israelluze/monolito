@@ -1,8 +1,7 @@
 import 'ts-node/register';
 import express from "express";
-import productRoutes from "./modules/product-adm/infraestructure/api/routes/product.routes";
 import clientRoutes from "./modules/client-adm/infraestructure/api/routes/client.routes";
-import storeRoutes from "./modules/store-catalog/infraestructure/api/routes/store.routes";
+import productRoutes from "./modules/store-catalog/infraestructure/api/routes/product.routes";
 import { Sequelize } from "sequelize-typescript";
 import { ProductAdmModel } from "./modules/product-adm/repository/product.model";
 import ProductCatalogModel from "./modules/store-catalog/repository/product.model";
@@ -10,11 +9,16 @@ import { ClientModel } from "./modules/client-adm/repository/client.model";
 import checkoutRoutes from "./modules/checkout/infraestruture/api/routes/checkout.routes";
 import { Umzug, SequelizeStorage } from "umzug";
 import path from "path"; // Adicione esta linha
+import TransactionModel from './modules/payment/repository/transaction.model';
+import InvoiceModel from './modules/invoice/repository/invoice.model';
+import InvoiceItemsModel from './modules/invoice/repository/invoiceItems.model';
+import invoiceRoutes from './modules/invoice/infraestructure/api/routes/invoice.routes';
+import { migrator } from './migrations/config-migrations/migrator';
 
 const app = express();
 app.use(express.json());
 
-export let sequelize: Sequelize;
+let sequelize: Sequelize;
 let migration: Umzug<any>;
 
 async function setupDb() {
@@ -25,34 +29,25 @@ async function setupDb() {
     });
 
     // Registre os modelos
-    await sequelize.addModels([ProductCatalogModel, ProductAdmModel, ClientModel]);
+    await sequelize.addModels([ProductCatalogModel, 
+        ProductAdmModel, 
+        ClientModel,
+        TransactionModel,
+        InvoiceModel,
+        InvoiceItemsModel]);   
+        
+    migration = migrator(sequelize)
 
-    // Configure o Umzug para gerenciar as migrations
     // migration = new Umzug({
     //   migrations: {
-    //     glob: 
-    //       "*/src/modules/migrations/*.{js,ts}"
-    //       // {
-    //       //   cwd: path.join(__dirname, "../../../"), // Use path.join aqui
-    //       //   ignore: ["**/*.d.ts", "**/index.ts", "**/index.js"],
-    //       // },
-    //     ,
+    //     glob: "src/modules/migrations/*.{js,ts}",
     //   },
     //   context: sequelize,
     //   storage: new SequelizeStorage({ sequelize }),
-    //   logger: console
+    //   logger: console,
     // });
 
-    migration = new Umzug({
-      migrations: {
-        glob: "src/modules/migrations/*.{js,ts}",
-      },
-      context: sequelize,
-      storage: new SequelizeStorage({ sequelize }),
-      logger: console,
-    });
-
-    console.log("Database setup complete.");
+    // console.log("Database setup complete.");
 
 }
 
@@ -75,7 +70,8 @@ async function setupDb() {
 app.use("/products", productRoutes);
 app.use("/clients", clientRoutes);
 app.use("/checkout", checkoutRoutes);
-app.use("/store", storeRoutes);
-// app.use("/invoice", invoiceRoutes);
+ app.use("/invoice", invoiceRoutes);
 
 export default app;
+
+export {sequelize, migration, setupDb }; // Exporta apenas o migration, já que sequelize já foi exportado

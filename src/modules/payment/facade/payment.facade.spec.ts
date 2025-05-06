@@ -41,7 +41,7 @@ describe("PaymentFacade", () => {
         expect(output.transactionId).toBeDefined();
         expect(output.orderId).toBe(input.orderId);
         expect(output.amount).toBe(input.amount);  
-        expect(output.status).toBe("aproved");
+        expect(output.status).toBe("approved");
 
       });
     

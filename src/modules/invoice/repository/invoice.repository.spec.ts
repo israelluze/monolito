@@ -93,8 +93,7 @@ describe("Invoice Repository test", () => {
     const repository = new InvoiceRepository();
     await repository.add(invoice);
 
-    const foundInvoice = await repository.find(invoice.id.id);
-    console.log("foundInvoice", foundInvoice);
+    const foundInvoice = await repository.find(invoice.id.id);    
     expect(foundInvoice.id.id).toEqual(invoice.id.id);
     expect(foundInvoice.name).toEqual(invoice.name);
     expect(foundInvoice.document).toEqual(invoice.document);

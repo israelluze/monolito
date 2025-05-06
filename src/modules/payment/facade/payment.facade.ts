@@ -6,8 +6,13 @@ export default class PaymentFacade implements PaymentFacadeInterface {
     constructor(private processPaymentUseCase: UseCaseInterface) {}   
     
     process(input: PaymentFacadeInputDto): Promise<PaymentFacadeOutputDto> {
-        console.log("PaymentFacade.process", input);
-        return this.processPaymentUseCase.execute(input);
+        try {            
+            return this.processPaymentUseCase.execute(input);
+        } catch (error) {            
+            throw new Error("Error processing payment: " + error);
+        }
+
+        
     }
     
 }

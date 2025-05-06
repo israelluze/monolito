@@ -17,20 +17,20 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
     private _catalogFacade: StoreCatalogFacadeInterface;
     private _repository: CheckoutGateway; // Assuming this is defined somewhere in the actual code
     private _invoiceFacade: InvoiceFacadeInterface;
-    private _paymentoFacade: PaymentFacadeInterface
+    private _paymentFacade: PaymentFacadeInterface
 
     constructor(clientFacade: ClientAdmFacadeInterface,
                 productFacade: ProductAdmFacadeInterface,
                 catalogFacade: StoreCatalogFacadeInterface,
                 repository: CheckoutGateway,
                 invoiceFacade: InvoiceFacadeInterface,
-                paymentoFacade: PaymentFacadeInterface) {        
+                paymentFacade: PaymentFacadeInterface) {        
         this._clientFacade = clientFacade;
         this._productFacade = productFacade;
         this._catalogFacade = catalogFacade;
         this._repository = repository;
         this._invoiceFacade = invoiceFacade;
-        this._paymentoFacade = paymentoFacade;
+        this._paymentFacade = paymentFacade;
     }    
 
     async execute(input: PlaceOrderInputDto): Promise<PlaceOrderOutputDto> {
@@ -57,15 +57,12 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
         const order = new Order({
             client: myClient,
             products,
-        });
+        });        
         
-        console.log("antes do pagamento");
-        const payment = await this._paymentoFacade.process({
+        const payment = await this._paymentFacade.process({
             orderId: order.id.id,
             amount: order.total,
-        });
-        console.log("depois do pagamento");
-        console.log("Payment", payment);
+        });        
 
         const invoice = 
             payment.status === "approved" ?
@@ -86,9 +83,10 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
                 }))            
 
             }) : null;
-
+            
             payment.status === "approved" && order.approved();
-            this._repository.addOrder(order); 
+            
+            //this._repository.addOrder(order);  não irei implementar o repositório por enquanto
 
 
         
@@ -110,12 +108,12 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
             throw new Error("No products selected");
         }
 
-        for (const product of input.products) {
-            const stock = await this._productFacade.checkStock({productId: product.productId});
-            if (stock.stock <= 0) {
-                throw new Error(`Product ${product.productId} is out of stock`);
-            }
-        }
+        // for (const product of input.products) {
+        //     const stock = await this._productFacade.checkStock({productId: product.productId});
+        //     if (stock.stock <= 0) {
+        //         throw new Error(`Product ${product.productId} is out of stock`);
+        //     }
+        // }
     }
 
     private async getProduct(productId: string): Promise<Product> {
